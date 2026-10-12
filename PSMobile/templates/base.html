@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='icon.png') }}">
+  <title>{% block title %}PS Mobile Inventory{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bn-bg: #0b0e11;
+      --bn-surface: #1e2329;
+      --bn-border: #2b3139;
+      --bn-text-primary: #eaecef;
+      --bn-text-secondary: #848e9c;
+      --bn-accent: #fcd535;
+      --bn-success: #0ecb81;
+      --bn-danger: #f6465d;
+      --bn-warning: #f0b90b;
+    }
+
+    body { 
+      background-color: var(--bn-bg); 
+      color: var(--bn-text-primary);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    /* Custom Navbar */
+    .navbar {
+      background-color: var(--bn-surface) !important;
+      border-bottom: 1px solid var(--bn-border);
+    }
+    .navbar-brand { 
+      font-weight: 700; 
+      color: var(--bn-accent) !important;
+    }
+    .nav-link { 
+      color: var(--bn-text-secondary) !important; 
+      transition: color 0.2s;
+    }
+    .nav-link:hover, .nav-link.active { 
+      color: var(--bn-accent) !important; 
+    }
+
+    /* Binance-style Cards */
+    .card { 
+      background-color: var(--bn-surface); 
+      border: 1px solid var(--bn-border); 
+      color: var(--bn-text-primary);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .card-header {
+      background-color: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--bn-border);
+      color: var(--bn-text-secondary);
+      font-weight: 600;
+    }
+
+    /* Table Styles */
+    .table { color: var(--bn-text-primary); }
+    .table thead th { 
+      background-color: rgba(0,0,0,0.2); 
+      color: var(--bn-text-secondary); 
+      border-bottom: 1px solid var(--bn-border);
+      font-weight: 500;
+    }
+    .table td { border-bottom: 1px solid var(--bn-border); vertical-align: middle; }
+    .table-hover tbody tr:hover { background-color: rgba(255,255,255,0.02); color: var(--bn-text-primary); }
+    
+    .table img { max-height: 40px; border-radius: 6px; }
+
+    /* Form Elements */
+    .form-control, .form-select {
+      background-color: var(--bn-bg);
+      border: 1px solid var(--bn-border);
+      color: var(--bn-text-primary);
+    }
+    .form-control:focus, .form-select:focus {
+      background-color: var(--bn-bg);
+      border-color: var(--bn-accent);
+      color: var(--bn-text-primary);
+      box-shadow: 0 0 0 0.25rem rgba(252, 213, 53, 0.25);
+    }
+    .form-control::placeholder { color: var(--bn-text-secondary); }
+
+    /* Buttons */
+    .btn-primary { 
+      background-color: var(--bn-accent); 
+      border-color: var(--bn-accent); 
+      color: #000; 
+      font-weight: 600; 
+    }
+    .btn-primary:hover { background-color: #e2c130; border-color: #e2c130; color: #000; }
+    .btn-outline-primary { color: var(--bn-accent); border-color: var(--bn-accent); }
+    .btn-outline-primary:hover { background-color: var(--bn-accent); color: #000; }
+    .btn-outline-secondary { color: var(--bn-text-secondary); border-color: var(--bn-border); }
+    .btn-outline-secondary:hover { background-color: var(--bn-border); color: var(--bn-text-primary); }
+
+    /* Badges */
+    .badge { font-weight: 500; border-radius: 4px; padding: 0.4em 0.6em; }
+    .bg-success { background-color: var(--bn-success) !important; }
+    .bg-danger { background-color: var(--bn-danger) !important; }
+    .bg-warning { background-color: var(--bn-warning) !important; color: #000 !important; }
+    .bg-secondary { background-color: var(--bn-border) !important; color: var(--bn-text-secondary) !important; }
+
+    /* Alerts */
+    .alert { border: none; border-radius: 8px; }
+    .alert-success { background-color: rgba(14, 203, 129, 0.15); color: var(--bn-success); }
+    .alert-danger { background-color: rgba(246, 70, 93, 0.15); color: var(--bn-danger); }
+    .alert-warning { background-color: rgba(240, 185, 11, 0.15); color: var(--bn-warning); }
+    .alert-info { background-color: rgba(0, 123, 255, 0.15); color: #3498db; }
+
+    /* Responsive utility */
+    @media (max-width: 768px) {
+      .container { padding-left: 15px; padding-right: 15px; }
+      .navbar-brand { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+  {% if session.get('logged_in') %}
+  <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='icon.png') }}" alt="Logo" style="height: 32px; margin-right: 10px;">
+        PS MOBILE
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="navbar-nav ms-auto">
+          <a class="nav-link {{ 'active' if request.endpoint == 'index' }}" href="{{ url_for('index') }}">Dashboard</a>
+          <a class="nav-link {{ 'active' if request.endpoint == 'products' }}" href="{{ url_for('products') }}">Products</a>
+          <a class="nav-link {{ 'active' if request.endpoint == 'stock_move' }}" href="{{ url_for('stock_move') }}">Stock Move</a>
+          <a class="nav-link {{ 'active' if request.endpoint == 'history' }}" href="{{ url_for('history') }}">History</a>
+          <a class="nav-link" href="{{ url_for('export_csv', type='inventory') }}">Export</a>
+          <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  {% endif %}
+
+  <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

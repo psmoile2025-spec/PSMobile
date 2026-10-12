@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Products — PS Mobile Inventory{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="mb-0">Products</h2>
+  <a href="{{ url_for('product_add') }}" class="btn btn-primary">+ Add Product</a>
+</div>
+
+<form class="row g-2 mb-4" method="GET">
+  <div class="col-12 col-md-auto">
+    <div class="input-group">
+      <input type="text" name="search" class="form-control" placeholder="Search by name, code, brand..." value="{{ search }}">
+      <button type="submit" class="btn btn-outline-secondary">Search</button>
+      {% if search %}<a href="{{ url_for('products') }}" class="btn btn-outline-secondary">Clear</a>{% endif %}
+    </div>
+  </div>
+</form>
+
+<div class="card">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Code</th>
+          <th>Name</th>
+          <th>Brand / Model</th>
+          <th>Category</th>
+          <th class="text-center">Stock</th>
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td>
+            {% if p.image_url %}
+              <img src="{{ p.image_url }}" alt="">
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+          <td class="text-secondary">{{ p.product_code }}</td>
+          <td class="fw-medium">{{ p.name }}</td>
+          <td>{{ p.brand or '—' }} / {{ p.model or '—' }}</td>
+          <td>{{ p.category or '—' }}</td>
+          <td class="text-center">
+            <span class="badge bg-{{ 'danger' if p.current_stock <= 5 else 'secondary' }}">
+              {{ p.current_stock }}
+            </span>
+          </td>
+          <td class="text-end">
+            <a href="{{ url_for('product_edit', id=p.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+            <form action="{{ url_for('product_archive', id=p.id) }}" method="POST" class="d-inline"
+                  onsubmit="return confirm('Archive this product?');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-sm btn-outline-warning">Archive</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" class="text-center text-muted py-4">No products found</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

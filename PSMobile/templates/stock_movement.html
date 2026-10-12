@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Stock Movement — PS Mobile Inventory{% endblock %}
+{% block content %}
+<h2 class="mb-4">Record Stock Movement</h2>
+
+<div class="card">
+  <div class="card-body">
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <div class="row g-3">
+        <div class="col-md-6">
+          {{ form.product_id.label(class="form-label") }}
+          {{ form.product_id(class="form-select") }}
+        </div>
+        <div class="col-md-3">
+          {{ form.type.label(class="form-label") }}
+          {{ form.type(class="form-select") }}
+        </div>
+        <div class="col-md-3">
+          {{ form.quantity.label(class="form-label") }}
+          {{ form.quantity(class="form-control") }}
+        </div>
+        <div class="col-12">
+          {{ form.reason.label(class="form-label") }}
+          {{ form.reason(class="form-control", rows=2) }}
+        </div>
+      </div>
+      <div class="mt-4">
+        <button type="submit" class="btn btn-primary">Record Movement</button>
+        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
