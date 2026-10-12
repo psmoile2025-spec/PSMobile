@@ -2,3 +2,6 @@ flask
 supabase
 python-dotenv
 pandas
+flask-wtf
+wtforms
+gunicorn
